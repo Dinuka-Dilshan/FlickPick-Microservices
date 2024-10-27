@@ -4,5 +4,8 @@ import { ApiGatewayStack } from "./apigateway";
 import { LambdaStack } from "./lambdas";
 
 const app = new cdk.App();
-new LambdaStack(app, "FlickPickLambdaStack");
-new ApiGatewayStack(app, "FlickPickApiGatewayStack");
+const lambdas = new LambdaStack(app, "FlickPickLambdaStack");
+new ApiGatewayStack(app, "FlickPickApiGatewayStack", {
+  popularMoviesTvsLambda: lambdas.FlickPickPopularMoviesTvsLambda,
+  searchLambda: lambdas.FlickPickSearchMoviesLambda,
+});

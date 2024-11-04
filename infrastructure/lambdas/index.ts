@@ -7,6 +7,7 @@ import { join } from "path";
 export class LambdaStack extends Stack {
   public readonly FlickPickSearchMoviesLambda: NodejsFunction;
   public readonly FlickPickPopularMoviesTvsLambda: NodejsFunction;
+  public readonly FlickPickTitleDetailsLambda: NodejsFunction;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -40,6 +41,19 @@ export class LambdaStack extends Stack {
           "popularMoviesTvsLambda.ts"
         ),
         functionName: "FlickPickPopularMoviesTvsLambda",
+      }
+    );
+
+    this.FlickPickTitleDetailsLambda = new NodejsFunction(
+      this,
+      "FlickPickTitleDetailsLambda",
+      {
+        runtime: Runtime.NODEJS_LATEST,
+        memorySize: 512,
+        timeout: Duration.minutes(2),
+        handler: "handler",
+        entry: join(__dirname, "..", "..", "services", "titleDetailsLambda.ts"),
+        functionName: "FlickPickTitleDetailsLambda",
       }
     );
   }

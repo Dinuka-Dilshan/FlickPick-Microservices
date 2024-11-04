@@ -1,14 +1,14 @@
 export type Movie = {
-  posterUrl: string;
-  name: string;
-  imdbId: string;
-  year: string;
+  posterUrl?: string;
+  title: string;
+  imdbId?: string;
+  releaseYear: string;
 
   //
-  duration?: string;
-  rated?: string;
+  runtime?: string;
+  certificate?: string;
   ratings?: string;
-  votes?: string;
+  voteCount?: string;
   rank?: number;
   imdbUrl?: string;
 };

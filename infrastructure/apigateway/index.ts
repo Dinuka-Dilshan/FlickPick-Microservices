@@ -12,6 +12,7 @@ import { ROUTES } from "../../constants/routes";
 type Props = StackProps & {
   searchLambda: NodejsFunction;
   popularMoviesTvsLambda: NodejsFunction;
+  titleDetailsLambda: NodejsFunction;
 };
 
 export class ApiGatewayStack extends Stack {
@@ -52,6 +53,15 @@ export class ApiGatewayStack extends Stack {
         props.popularMoviesTvsLambda
       ),
       path: ROUTES.POPULAR_TVS,
+    });
+
+    api.addRoutes({
+      methods: [HttpMethod.GET],
+      integration: new HttpLambdaIntegration(
+        "FlickPickTitleDetailsIntegration",
+        props.titleDetailsLambda
+      ),
+      path: ROUTES.TITLE_DETAILS,
     });
 
     new CfnOutput(this, "FlickPickAPIURL", {

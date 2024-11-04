@@ -8,4 +8,5 @@ const lambdas = new LambdaStack(app, "FlickPickLambdaStack");
 new ApiGatewayStack(app, "FlickPickApiGatewayStack", {
   popularMoviesTvsLambda: lambdas.FlickPickPopularMoviesTvsLambda,
   searchLambda: lambdas.FlickPickSearchMoviesLambda,
+  titleDetailsLambda: lambdas.FlickPickTitleDetailsLambda,
 });

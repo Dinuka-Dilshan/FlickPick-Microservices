@@ -12,24 +12,24 @@ export default async (
     const responseText = await response.text();
     const cheerioHtmlTree = load(responseText);
 
-    const movieDataWithoutPoster = cheerioHtmlTree(
+    const movieDataWithoutPoster: Movie[] = cheerioHtmlTree(
       "div.ipc-metadata-list-summary-item__tc"
     )
       .get()
       .map((e) => ({
-        name: e.children[1].children[1].children[0].children[0].children[0]
-          .data,
+        title:
+          e.children[1].children[1].children[0].children[0].children[0].data,
         imdbUrl: `https://www.imdb.com${e.children[1].children[1].children[0].attribs.href}`,
         imdbId: `${
           e.children[1].children[1].children[0].attribs.href.split("/")?.[2]
         }`,
-        year: e.children[1].children[2].children[0].children[0].data,
-        duration: e.children[1].children[2].children[1]?.children[0].data,
-        rated: e.children[1].children[2].children[2]?.children[0].data,
+        releaseYear: e.children[1].children[2].children[0].children[0].data,
+        runtime: e.children[1].children[2].children[1]?.children[0].data,
+        certificate: e.children[1].children[2].children[2]?.children[0].data,
         ratings:
           e.children[1].children[3].children[0].children[0]?.children[1]
             ?.children[0]?.data,
-        votes:
+        voteCount:
           e.children[1].children[3].children[0].children[0]?.children[2]
             ?.children[2]?.data,
       }));
@@ -37,10 +37,10 @@ export default async (
     const movieDataWithPoster = cheerioHtmlTree("div.cli-poster-container")
       .get()
       .map((e, index) => ({
+        ...movieDataWithoutPoster[index],
         posterUrl: getImageURL(
           e.children[0].children[1].children[0].attribs.src
         ),
-        ...movieDataWithoutPoster[index],
         rank: index + 1,
       }));
     return { movies: movieDataWithPoster, error: undefined };

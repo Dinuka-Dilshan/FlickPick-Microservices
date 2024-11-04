@@ -1,5 +1,3 @@
-
-
 import { load } from "cheerio";
 import { URLS } from "../constants/urls";
 import { Movie } from "../types/movie";
@@ -13,13 +11,14 @@ export default async (
     const responseText = await response.text();
     const cheerioHtmlTree = load(responseText);
 
-    const movieDataWithoutPoster = cheerioHtmlTree(
+    const movieDataWithoutPoster: Movie[] = cheerioHtmlTree(
       "div.ipc-metadata-list-summary-item__tc"
     )
       .get()
       .map((node) => ({
-        name: node?.children?.[0].children[0]?.data,
-        year: node?.children?.[1].children[0]?.children?.[0]?.children[0]?.data,
+        title: node?.children?.[0].children[0]?.data,
+        releaseYear:
+          node?.children?.[1].children[0]?.children?.[0]?.children[0]?.data,
         imdbUrl: `https://www.imdb.com${node?.children?.[0]?.attribs?.href}`,
         imdbId: `${node?.children[0]?.attribs?.href?.split("/")?.[2]}`,
       }));

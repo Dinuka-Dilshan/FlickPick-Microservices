@@ -4,6 +4,7 @@ import {
   HttpApi,
   HttpMethod,
 } from "aws-cdk-lib/aws-apigatewayv2";
+import { HttpUserPoolAuthorizer } from "aws-cdk-lib/aws-apigatewayv2-authorizers";
 import { HttpLambdaIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
@@ -13,6 +14,7 @@ type Props = StackProps & {
   searchLambda: NodejsFunction;
   popularMoviesTvsLambda: NodejsFunction;
   titleDetailsLambda: NodejsFunction;
+  authorizer: HttpUserPoolAuthorizer;
 };
 
 export class ApiGatewayStack extends Stack {
@@ -35,6 +37,7 @@ export class ApiGatewayStack extends Stack {
         props.searchLambda
       ),
       path: ROUTES.SEARCH,
+      authorizer: props.authorizer,
     });
 
     api.addRoutes({
@@ -44,6 +47,7 @@ export class ApiGatewayStack extends Stack {
         props.popularMoviesTvsLambda
       ),
       path: ROUTES.POPULAR_MOIES,
+      authorizer: props.authorizer,
     });
 
     api.addRoutes({
@@ -53,6 +57,7 @@ export class ApiGatewayStack extends Stack {
         props.popularMoviesTvsLambda
       ),
       path: ROUTES.POPULAR_TVS,
+      authorizer: props.authorizer,
     });
 
     api.addRoutes({
@@ -62,6 +67,7 @@ export class ApiGatewayStack extends Stack {
         props.titleDetailsLambda
       ),
       path: ROUTES.TITLE_DETAILS,
+      authorizer: props.authorizer,
     });
 
     new CfnOutput(this, "FlickPickAPIURL", {

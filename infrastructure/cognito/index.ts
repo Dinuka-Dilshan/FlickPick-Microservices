@@ -56,6 +56,7 @@ export class CognitoUserPoolStack extends Stack {
       idTokenValidity: Duration.days(1),
       refreshTokenValidity: Duration.days(30),
       userPoolClientName: "FlickPickUserPoolClient",
+      authFlows: { userPassword: true },
     });
 
     // to enable hosted UI

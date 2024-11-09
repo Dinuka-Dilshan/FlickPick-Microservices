@@ -1,23 +1,32 @@
-import { ROUTES } from "../constants/routes";
-import { LambdaFunctionType } from "../types";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import popularMovieTvParse from "../utils/popularMovieTvParse";
 
-export const handler: LambdaFunctionType = async (event) => {
-  const isMovies = event.rawPath === ROUTES.POPULAR_MOIES;
+const s3Cleient = new S3Client();
 
-  const { movies, error } = await popularMovieTvParse(
-    isMovies ? "moviemeter" : "tvmeter"
-  );
+export const handler = async () => {
+  const moviesPromise = popularMovieTvParse("moviemeter");
+  const tvsPromise = popularMovieTvParse("tvmeter");
 
-  if (error) {
-    return {
-      body: JSON.stringify({ error: "Internal server error" }),
-      statusCode: 500,
-    };
+  const { movies, error: moviesError } = await moviesPromise;
+  const { movies: tvs, error: tvsError } = await tvsPromise;
+
+  if (!moviesError) {
+    await s3Cleient.send(
+      new PutObjectCommand({
+        Body: JSON.stringify(movies),
+        Bucket: process.env.BUCKET,
+        Key: "popular-movies.json",
+      })
+    );
   }
 
-  return {
-    body: JSON.stringify(movies),
-    statusCode: 200,
-  };
+  if (!tvsError) {
+    await s3Cleient.send(
+      new PutObjectCommand({
+        Body: JSON.stringify(tvs),
+        Bucket: process.env.BUCKET,
+        Key: "popular-tvs.json",
+      })
+    );
+  }
 };

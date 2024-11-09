@@ -1,15 +1,21 @@
-import { Duration, Stack, StackProps } from "aws-cdk-lib";
+import { Duration, Stack, type StackProps } from "aws-cdk-lib";
+import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
-import { Construct } from "constructs";
+import type { Bucket } from "aws-cdk-lib/aws-s3";
+import type { Construct } from "constructs";
 import { join } from "path";
+
+type Props = StackProps & {
+  bucket: Bucket;
+};
 
 export class LambdaStack extends Stack {
   public readonly FlickPickSearchMoviesLambda: NodejsFunction;
   public readonly FlickPickPopularMoviesTvsLambda: NodejsFunction;
   public readonly FlickPickTitleDetailsLambda: NodejsFunction;
 
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props);
 
     this.FlickPickSearchMoviesLambda = new NodejsFunction(
@@ -41,7 +47,18 @@ export class LambdaStack extends Stack {
           "popularMoviesTvsLambda.ts"
         ),
         functionName: "FlickPickPopularMoviesTvsLambda",
+        environment: {
+          BUCKET: props.bucket.bucketName,
+        },
       }
+    );
+
+    this.FlickPickPopularMoviesTvsLambda.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["s3:PutObject"],
+        resources: [`${props.bucket.bucketArn}/*`],
+      })
     );
 
     this.FlickPickTitleDetailsLambda = new NodejsFunction(

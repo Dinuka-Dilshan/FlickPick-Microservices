@@ -1,5 +1,5 @@
 import { LambdaFunctionType } from "../types";
-import searchMovieParse from "../utils/searchMovieParse";
+import searchMovie from "../utils/searchMovie";
 
 export const handler: LambdaFunctionType = async (event, context) => {
   const searchText = event.queryStringParameters?.searchText;
@@ -11,7 +11,7 @@ export const handler: LambdaFunctionType = async (event, context) => {
     };
   }
 
-  const { movies, error } = await searchMovieParse(searchText);
+  const { movies, error } = await searchMovie(searchText);
 
   if (error) {
     return {

@@ -61,12 +61,13 @@ export class CognitoUserPoolStack extends Stack {
       selfSignUpEnabled: true,
       email: UserPoolEmail.withCognito(),
       accountRecovery: AccountRecovery.EMAIL_ONLY,
+      autoVerify: { email: true },
     });
 
     const userPoolClient = new UserPoolClient(this, "FlickPickUserPoolClient", {
       userPool,
-      accessTokenValidity: Duration.days(1),
-      idTokenValidity: Duration.days(1),
+      accessTokenValidity: Duration.hours(1),
+      idTokenValidity: Duration.hours(1),
       refreshTokenValidity: Duration.days(30),
       userPoolClientName: "FlickPickUserPoolClient",
       authFlows: { userPassword: true },

@@ -13,8 +13,8 @@ export class EventStack extends Stack {
     super(scope, id, props);
 
     new Rule(this, "FlickPickEventBridge", {
-      description: "Run popular movies lambda function every tweleve hours",
-      schedule: Schedule.rate(Duration.hours(12)),
+      description: "Run popular movies lambda function every six hours",
+      schedule: Schedule.rate(Duration.hours(6)),
       targets: [new LambdaFunction(props.lambdaFunction)],
     });
   }

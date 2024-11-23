@@ -3,4 +3,5 @@ export const ROUTES = {
   POPULAR_TVS: "/toptvs",
   SEARCH: "/search",
   TITLE_DETAILS: "/title/{id}",
+  WISH_LIST: "/wishlist",
 };

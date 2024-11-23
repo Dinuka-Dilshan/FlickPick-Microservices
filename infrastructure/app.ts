@@ -2,6 +2,7 @@ import * as cdk from "aws-cdk-lib";
 import "source-map-support/register";
 import { ApiGatewayStack } from "./apigateway";
 import { CognitoUserPoolStack } from "./cognito";
+import { DynamodbStack } from "./dynamodb";
 import { EventStack } from "./eventbridge";
 import { LambdaStack } from "./lambdas";
 import { S3Stack } from "./s3";
@@ -19,7 +20,11 @@ new ApiGatewayStack(app, "FlickPickApiGatewayStack", {
   searchLambda: lambdas.FlickPickSearchMoviesLambda,
   titleDetailsLambda: lambdas.FlickPickTitleDetailsLambda,
   authorizer: cognito.authorizer,
+  wishListLambda: lambdas.FlickPickWishListLambda,
 });
 new EventStack(app, "FlickPickEventStack", {
   lambdaFunction: lambdas.FlickPickPopularMoviesTvsLambda,
+});
+new DynamodbStack(app, "FlickPickDynamodbStack", {
+  lambdas: [lambdas.FlickPickWishListLambda],
 });

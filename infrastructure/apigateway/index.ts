@@ -13,6 +13,7 @@ import { ROUTES } from "../../constants/routes";
 type Props = StackProps & {
   searchLambda: NodejsFunction;
   titleDetailsLambda: NodejsFunction;
+  wishListLambda: NodejsFunction;
   authorizer: HttpUserPoolAuthorizer;
 };
 
@@ -24,7 +25,11 @@ export class ApiGatewayStack extends Stack {
       apiName: "FlickPickAPIGateWay",
       corsPreflight: {
         allowOrigins: ["*"],
-        allowMethods: [CorsHttpMethod.GET],
+        allowMethods: [
+          CorsHttpMethod.GET,
+          CorsHttpMethod.POST,
+          CorsHttpMethod.DELETE,
+        ],
         allowHeaders: ["*"],
       },
     });
@@ -46,6 +51,16 @@ export class ApiGatewayStack extends Stack {
         props.titleDetailsLambda
       ),
       path: ROUTES.TITLE_DETAILS,
+      authorizer: props.authorizer,
+    });
+
+    api.addRoutes({
+      methods: [HttpMethod.GET, HttpMethod.POST, HttpMethod.DELETE],
+      integration: new HttpLambdaIntegration(
+        "FlickPickWishListIntegration",
+        props.wishListLambda
+      ),
+      path: ROUTES.WISH_LIST,
       authorizer: props.authorizer,
     });
 

@@ -13,7 +13,7 @@ import { ROUTES } from "../../constants/routes";
 type Props = StackProps & {
   searchLambda: NodejsFunction;
   titleDetailsLambda: NodejsFunction;
-  wishListLambda: NodejsFunction;
+  watchListLambda: NodejsFunction;
   authorizer: HttpUserPoolAuthorizer;
 };
 
@@ -58,9 +58,9 @@ export class ApiGatewayStack extends Stack {
       methods: [HttpMethod.GET, HttpMethod.POST, HttpMethod.DELETE],
       integration: new HttpLambdaIntegration(
         "FlickPickWishListIntegration",
-        props.wishListLambda
+        props.watchListLambda
       ),
-      path: ROUTES.WISH_LIST,
+      path: ROUTES.WATCH_LIST,
       authorizer: props.authorizer,
     });
 

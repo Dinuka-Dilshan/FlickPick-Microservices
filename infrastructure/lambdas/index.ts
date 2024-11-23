@@ -14,7 +14,7 @@ export class LambdaStack extends Stack {
   public readonly FlickPickSearchMoviesLambda: NodejsFunction;
   public readonly FlickPickPopularMoviesTvsLambda: NodejsFunction;
   public readonly FlickPickTitleDetailsLambda: NodejsFunction;
-  public readonly FlickPickWishListLambda: NodejsFunction;
+  public readonly FlickPickWatchListLambda: NodejsFunction;
 
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props);
@@ -75,16 +75,16 @@ export class LambdaStack extends Stack {
       }
     );
 
-    this.FlickPickWishListLambda = new NodejsFunction(
+    this.FlickPickWatchListLambda = new NodejsFunction(
       this,
-      "FlickPickWishListLambda",
+      "FlickPickWatchListLambda",
       {
         runtime: Runtime.NODEJS_LATEST,
         memorySize: 256,
         timeout: Duration.minutes(1),
         handler: "handler",
-        entry: join(__dirname, "..", "..", "services", "wishListLambda.ts"),
-        functionName: "FlickPickWishListLambda",
+        entry: join(__dirname, "..", "..", "services", "watchListLambda.ts"),
+        functionName: "FlickPickWatchListLambda",
       }
     );
   }

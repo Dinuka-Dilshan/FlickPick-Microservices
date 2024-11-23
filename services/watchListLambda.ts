@@ -22,7 +22,7 @@ export const handler: LambdaFunctionType = async (event) => {
           KeyConditionExpression: "PK = :pk AND begins_with(SK,:prefix)",
           ExpressionAttributeValues: {
             ":pk": `USER#${userId}`,
-            ":prefix": "WISHLIST#",
+            ":prefix": "WATCHLIST#",
           },
         })
       );
@@ -47,7 +47,7 @@ export const handler: LambdaFunctionType = async (event) => {
     try {
       const itemToSave = {
         PK: `USER#${userId}`,
-        SK: `WISHLIST#${movie.imdbId}`,
+        SK: `WATCHLIST#${movie.imdbId}`,
         Title: movie.title,
         Image: movie.posterUrl,
         Year: movie.releaseYear,
@@ -83,7 +83,7 @@ export const handler: LambdaFunctionType = async (event) => {
           TableName: process.env.FLICK_PICK_TABLE,
           Key: {
             PK: `USER#${userId}`,
-            SK: `WISHLIST#${imdbId}`,
+            SK: `WATCHLIST#${imdbId}`,
           },
         })
       );

@@ -20,11 +20,7 @@ export default async (
     const parsed =
       JSON.parse(nextDataScript)?.props?.pageProps?.aboveTheFoldData;
 
-    const rank = cheerioHtmlTree(
-      'div [data-testid="hero-rating-bar__popularity__score"]'
-    )?.[0]?.children?.[0]?.data;
-
-    const movie = {
+    const movie: Movie = {
       title: parsed?.titleText?.text,
       ratings: parsed?.ratingsSummary?.aggregateRating,
       voteCount: parsed?.ratingsSummary?.voteCount,
@@ -33,11 +29,37 @@ export default async (
       runtime: parsed?.runtime?.displayableProperty?.value?.plainText,
       posterUrl: parsed?.primaryImage?.url,
       videoUrls: parsed?.primaryVideos?.edges?.map(
-        (edge) => edge.node?.playbackURLs?.[0]?.url
+        (edge: any) => edge.node?.playbackURLs?.[0]?.url
       ),
-      genres: parsed?.genres?.genres?.map((genre) => genre.text),
+      genres: parsed?.genres?.genres?.map((genre: any) => genre.text),
       plot: parsed?.plot?.plotText?.plainText,
-      rank,
+      imdbId: id,
+      releaseDate: `${parsed?.releaseDate?.year}/${parsed?.releaseDate?.month}/${parsed?.releaseDate?.day}`,
+      meterRanking: {
+        currentRank: parsed?.meterRanking?.currentRank,
+        rankChange: {
+          changeDirection: parsed?.meterRanking?.rankChange?.changeDirection,
+          difference: parsed?.meterRanking?.rankChange?.difference,
+        },
+      },
+      userReviewsCout: parsed?.reviews?.total,
+      titleType: parsed?.titleType?.displayableProperty?.value?.plainText,
+      isSeries: parsed?.titleType?.isSeries,
+      publicationStatus: parsed?.meta?.publicationStatus,
+      criticReviewsTotal: parsed?.criticReviewsTotal?.total,
+      countriesOfOrigin: parsed?.countriesOfOrigin?.countries?.map(
+        (i: any) => i.id
+      ),
+      featuredReviews: parsed?.featuredReviews?.edges?.map((item: any) => ({
+        author: item?.node?.author?.nickName,
+        summary: item?.node?.summary?.originalText,
+        text: item?.node?.text?.originalText?.plainText,
+        date: item?.node?.submissionDate,
+        authorRating: item?.node?.authorRating,
+      })),
+      creators: parsed?.creatorsPageTitle?.flatMap((category: any) =>
+        category.credits.map((credit: any) => credit.name.nameText.text)
+      ),
     };
     return {
       movie,

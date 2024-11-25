@@ -6,7 +6,9 @@ import {
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { LambdaFunctionType } from "../types";
+import { WatchListTableItem } from "../types/dynamodb";
 import { Movie } from "../types/movie";
+import { convertToMovie } from "../utils/movie";
 
 const ddbClient = new DynamoDBClient();
 const client = DynamoDBDocumentClient.from(ddbClient);
@@ -27,7 +29,11 @@ export const handler: LambdaFunctionType = async (event) => {
         })
       );
       return {
-        body: JSON.stringify(data.Items),
+        body: JSON.stringify(
+          (data.Items as WatchListTableItem[])?.map((item) =>
+            convertToMovie(item)
+          )
+        ),
         statusCode: 200,
       };
     } catch (error) {
@@ -45,13 +51,13 @@ export const handler: LambdaFunctionType = async (event) => {
     }
 
     try {
-      const itemToSave = {
+      const itemToSave: WatchListTableItem = {
         PK: `USER#${userId}`,
         SK: `WATCHLIST#${movie.imdbId}`,
         Title: movie.title,
-        Image: movie.posterUrl,
+        Image: movie.posterUrl || "",
         Year: movie.releaseYear,
-        AddedOn: Date.now(),
+        On: Date.now(),
       };
       await client.send(
         new PutCommand({
@@ -61,7 +67,7 @@ export const handler: LambdaFunctionType = async (event) => {
       );
       return {
         statusCode: 200,
-        body: JSON.stringify(itemToSave),
+        body: JSON.stringify(convertToMovie(itemToSave)),
       };
     } catch (error) {
       console.log("ERROR", error);

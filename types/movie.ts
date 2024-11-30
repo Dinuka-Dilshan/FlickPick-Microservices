@@ -33,6 +33,14 @@ export type Movie = {
     authorRating: number;
   }[];
   creators?: string[];
+  moreLikeThis: {
+    posterUrl: string;
+    title: string;
+    releaseYear: number;
+    titleType: string;
+    imdbId: string;
+  }[];
+  watchListName?: string;
 };
 
 export type WatchListMovie = Pick<

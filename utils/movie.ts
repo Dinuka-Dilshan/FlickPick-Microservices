@@ -7,7 +7,7 @@ export const convertToWatchListItem = (
 ): WatchListTableItem => {
   return {
     PK: `USER#${userId}`,
-    SK: `WATCHLIST#${movie.imdbId}`,
+    SK: `WATCHLIST#${movie.watchListName || "Default"}#${movie.imdbId}`,
     Title: movie.title,
     Image: movie.posterUrl || "",
     Year: movie.releaseYear,
@@ -20,7 +20,7 @@ export const convertToMovie = (item: WatchListTableItem): WatchListMovie => {
     releaseYear: item.Year,
     title: item.Title,
     posterUrl: item.Image,
-    imdbId: item.SK.split("#")[1],
+    imdbId: item.SK.split("#")[2],
     addedOn: item.On,
   };
 };

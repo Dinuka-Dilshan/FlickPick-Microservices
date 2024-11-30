@@ -83,7 +83,14 @@ export class LambdaStack extends Stack {
         memorySize: 256,
         timeout: Duration.minutes(1),
         handler: "handler",
-        entry: join(__dirname, "..", "..", "services", "watchListLambda.ts"),
+        entry: join(
+          __dirname,
+          "..",
+          "..",
+          "services",
+          "WatchList",
+          "watchListLambda.ts"
+        ),
         functionName: "FlickPickWatchListLambda",
       }
     );

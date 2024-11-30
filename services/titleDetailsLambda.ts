@@ -15,7 +15,7 @@ export const handler: LambdaFunctionType = async (event) => {
 
   if (error) {
     return {
-      body: JSON.stringify({ error: "Internal server error" }),
+      body: JSON.stringify({ error }),
       statusCode: 500,
     };
   }

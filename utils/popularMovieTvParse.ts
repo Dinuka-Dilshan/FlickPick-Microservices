@@ -1,5 +1,6 @@
 import { load } from "cheerio";
 import { Movie } from "../types/movie";
+import { MIMIC_HEADERS } from "./headers";
 import { getImageURL } from "./images";
 
 type Varient = "moviemeter" | "tvmeter";
@@ -8,7 +9,9 @@ export default async (
   varient: Varient
 ): Promise<{ movies: Movie[]; error?: string }> => {
   try {
-    const response = await fetch(`https://www.imdb.com/chart/${varient}`);
+    const response = await fetch(`https://www.imdb.com/chart/${varient}`, {
+      headers: MIMIC_HEADERS,
+    });
     const responseText = await response.text();
     const cheerioHtmlTree = load(responseText);
 
@@ -32,6 +35,7 @@ export default async (
         voteCount:
           e.children[1].children[3].children[0].children[0]?.children[2]
             ?.children[2]?.data,
+        posterUrl: "",
       }));
 
     const movieDataWithPoster = cheerioHtmlTree("div.cli-poster-container")

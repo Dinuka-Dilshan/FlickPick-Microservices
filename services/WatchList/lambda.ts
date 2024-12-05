@@ -1,5 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { Message } from "../../constants/Messages";
 import { LambdaFunctionType } from "../../types";
 import addToWatchList from "./addToWatchList";
 import deleteWatchListItem from "./deleteWatchListItem";
@@ -12,14 +13,14 @@ export const handler: LambdaFunctionType = async (event) => {
   const userId = event.requestContext.authorizer.jwt.claims.username as string;
 
   if (event.requestContext.http.method === "GET") {
-    const { watchListItems, error } = await getWatchListItems({
+    const { watchListItems, message, error } = await getWatchListItems({
       client,
       userId,
     });
 
-    if (error) {
+    if (message === Message.ERROR) {
       return {
-        body: JSON.stringify({ error: "Retrieve watchList Failed" }),
+        body: JSON.stringify({ error }),
         statusCode: 500,
       };
     }
@@ -29,39 +30,37 @@ export const handler: LambdaFunctionType = async (event) => {
       statusCode: 200,
     };
   } else if (event.requestContext.http.method === "POST") {
-    const { addedItem, error } = await addToWatchList({
+    const { message, error } = await addToWatchList({
       client,
       event,
       userId,
     });
 
-    if (error) {
+    if (message === Message.ERROR) {
       return {
-        body: JSON.stringify({ error: "Failed to add" }),
+        body: JSON.stringify({ error }),
         statusCode: 500,
       };
     }
 
     return {
-      statusCode: 200,
-      body: JSON.stringify(addedItem),
+      statusCode: 204,
     };
   } else if (event.requestContext.http.method === "DELETE") {
-    const { error, isDeleted } = await deleteWatchListItem({
+    const { error, message } = await deleteWatchListItem({
       client,
       event,
       userId,
     });
 
-    if (isDeleted) {
+    if (message === Message.ERROR)
       return {
-        statusCode: 200,
-        body: JSON.stringify({ message: "Removed Item Successfully" }),
+        body: JSON.stringify({ error }),
+        statusCode: 500,
       };
-    }
+
     return {
-      body: JSON.stringify({ error: "Removed Item Failed" }),
-      statusCode: 500,
+      statusCode: 204,
     };
   }
 

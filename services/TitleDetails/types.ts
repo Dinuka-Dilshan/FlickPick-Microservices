@@ -1,16 +1,15 @@
-export type Movie = {
-  posterUrl: string;
+export type FlickTitleDetails = {
   title: string;
-  imdbId: string;
-  releaseYear: string;
-  runtime?: string;
-  certificate?: string;
   ratings?: string;
   voteCount?: string;
-  imdbUrl?: string;
+  releaseYear: string;
+  certificate?: string;
+  runtime?: string;
+  posterUrl: string;
   videoUrls?: string[];
   genres?: string[];
   plot?: string;
+  imdbId: string;
   releaseDate?: string;
   meterRanking?: {
     currentRank: number;
@@ -40,10 +39,9 @@ export type Movie = {
     titleType: string;
     imdbId: string;
   }[];
-  watchListName?: string;
 };
 
-export type WatchListMovie = Pick<
-  Movie,
-  "imdbId" | "posterUrl" | "title" | "releaseYear"
-> & { addedOn: number };
+export type FlickTitleDetailsTableItem = Omit<FlickTitleDetails, "imdbId"> & {
+  PK: string;
+  SK: string;
+};

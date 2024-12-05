@@ -1,5 +1,5 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import popularMovieTvParse from "../utils/popularMovieTvParse";
+import popularMovieTvParse from "./popularMovieTvParse";
 
 const s3Cleient = new S3Client();
 

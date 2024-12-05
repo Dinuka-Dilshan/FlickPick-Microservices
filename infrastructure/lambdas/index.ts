@@ -15,6 +15,7 @@ export class LambdaStack extends Stack {
   public readonly FlickPickPopularMoviesTvsLambda: NodejsFunction;
   public readonly FlickPickTitleDetailsLambda: NodejsFunction;
   public readonly FlickPickWatchListLambda: NodejsFunction;
+  public readonly FlickPickFlickHistoryLambda: NodejsFunction;
 
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props);
@@ -27,7 +28,7 @@ export class LambdaStack extends Stack {
         memorySize: 512,
         timeout: Duration.minutes(2),
         handler: "handler",
-        entry: join(__dirname, "..", "..", "services", "searchMoviesLambda.ts"),
+        entry: join(__dirname, "..", "..", "services", "Search", "lambda.ts"),
         functionName: "FlickPickSearchMoviesLambda",
       }
     );
@@ -45,7 +46,8 @@ export class LambdaStack extends Stack {
           "..",
           "..",
           "services",
-          "popularMoviesTvsLambda.ts"
+          "PopularFlicks",
+          "lambda.ts"
         ),
         functionName: "FlickPickPopularMoviesTvsLambda",
         environment: {
@@ -70,7 +72,14 @@ export class LambdaStack extends Stack {
         memorySize: 512,
         timeout: Duration.minutes(2),
         handler: "handler",
-        entry: join(__dirname, "..", "..", "services", "titleDetailsLambda.ts"),
+        entry: join(
+          __dirname,
+          "..",
+          "..",
+          "services",
+          "TitleDetails",
+          "lambda.ts"
+        ),
         functionName: "FlickPickTitleDetailsLambda",
       }
     );
@@ -89,9 +98,29 @@ export class LambdaStack extends Stack {
           "..",
           "services",
           "WatchList",
-          "watchListLambda.ts"
+          "lambda.ts"
         ),
         functionName: "FlickPickWatchListLambda",
+      }
+    );
+
+    this.FlickPickFlickHistoryLambda = new NodejsFunction(
+      this,
+      "FlickPickFlickHistoryLambda",
+      {
+        runtime: Runtime.NODEJS_LATEST,
+        memorySize: 256,
+        timeout: Duration.minutes(1),
+        handler: "handler",
+        entry: join(
+          __dirname,
+          "..",
+          "..",
+          "services",
+          "FlickHistory",
+          "lambda.ts"
+        ),
+        functionName: "FlickPickFlickHistoryLambda",
       }
     );
   }

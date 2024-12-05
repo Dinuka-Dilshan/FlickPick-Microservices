@@ -1,3 +1,10 @@
+export type SearchFlick = {
+  posterUrl: string;
+  title: string;
+  imdbId: string;
+  releaseYear: string;
+};
+
 export type ImdbSearchResponse = {
   d: Array<{
     i: {

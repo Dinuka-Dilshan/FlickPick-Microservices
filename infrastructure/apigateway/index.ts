@@ -14,6 +14,7 @@ type Props = StackProps & {
   searchLambda: NodejsFunction;
   titleDetailsLambda: NodejsFunction;
   watchListLambda: NodejsFunction;
+  flickHistoryLambda: NodejsFunction;
   authorizer: HttpUserPoolAuthorizer;
 };
 
@@ -61,6 +62,16 @@ export class ApiGatewayStack extends Stack {
         props.watchListLambda
       ),
       path: ROUTES.WATCH_LIST,
+      authorizer: props.authorizer,
+    });
+
+    api.addRoutes({
+      methods: [HttpMethod.GET, HttpMethod.POST, HttpMethod.DELETE],
+      integration: new HttpLambdaIntegration(
+        "FlickPickFlickHistoryIntegration",
+        props.flickHistoryLambda
+      ),
+      path: ROUTES.FLICK_HISTORY,
       authorizer: props.authorizer,
     });
 

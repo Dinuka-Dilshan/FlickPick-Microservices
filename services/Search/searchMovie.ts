@@ -1,11 +1,10 @@
-import { URLS } from "../constants/urls";
-import { ImdbSearchResponse } from "../types/imdbApi";
-import { Movie } from "../types/movie";
-import { MIMIC_HEADERS } from "./headers";
+import { MIMIC_HEADERS } from "../../constants/headers";
+import { URLS } from "../../constants/urls";
+import { ImdbSearchResponse, SearchFlick } from "./types";
 
 export default async (
   searchText: string
-): Promise<{ movies: Movie[]; error?: string }> => {
+): Promise<{ movies: SearchFlick[]; error?: string }> => {
   try {
     const response = await fetch(URLS.SEARCH_URL(searchText), {
       headers: MIMIC_HEADERS,

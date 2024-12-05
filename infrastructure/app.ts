@@ -21,10 +21,15 @@ new ApiGatewayStack(app, "FlickPickApiGatewayStack", {
   titleDetailsLambda: lambdas.FlickPickTitleDetailsLambda,
   authorizer: cognito.authorizer,
   watchListLambda: lambdas.FlickPickWatchListLambda,
+  flickHistoryLambda: lambdas.FlickPickFlickHistoryLambda,
 });
 new EventStack(app, "FlickPickEventStack", {
   lambdaFunction: lambdas.FlickPickPopularMoviesTvsLambda,
 });
 new DynamodbStack(app, "FlickPickDynamodbStack", {
-  lambdas: [lambdas.FlickPickWatchListLambda],
+  lambdas: [
+    lambdas.FlickPickWatchListLambda,
+    lambdas.FlickPickFlickHistoryLambda,
+    lambdas.FlickPickTitleDetailsLambda,
+  ],
 });

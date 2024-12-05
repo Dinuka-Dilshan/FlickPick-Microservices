@@ -1,13 +1,13 @@
 import { load } from "cheerio";
-import { Movie } from "../types/movie";
-import { MIMIC_HEADERS } from "./headers";
-import { getImageURL } from "./images";
+import { getImageURL } from "../../utils/images";
+import { PopularFlick } from "./types";
+import { MIMIC_HEADERS } from "../../constants/headers";
 
 type Varient = "moviemeter" | "tvmeter";
 
 export default async (
   varient: Varient
-): Promise<{ movies: Movie[]; error?: string }> => {
+): Promise<{ movies: PopularFlick[]; error?: string }> => {
   try {
     const response = await fetch(`https://www.imdb.com/chart/${varient}`, {
       headers: MIMIC_HEADERS,
@@ -15,11 +15,11 @@ export default async (
     const responseText = await response.text();
     const cheerioHtmlTree = load(responseText);
 
-    const movieDataWithoutPoster: Movie[] = cheerioHtmlTree(
+    const movieDataWithoutPoster: PopularFlick[] = cheerioHtmlTree(
       "div.ipc-metadata-list-summary-item__tc"
     )
       .get()
-      .map((e) => ({
+      .map((e: any) => ({
         title:
           e.children[1].children[1].children[0].children[0].children[0].data,
         imdbUrl: `https://www.imdb.com${e.children[1].children[1].children[0].attribs.href}`,
@@ -36,11 +36,12 @@ export default async (
           e.children[1].children[3].children[0].children[0]?.children[2]
             ?.children[2]?.data,
         posterUrl: "",
+        rank: 0,
       }));
 
     const movieDataWithPoster = cheerioHtmlTree("div.cli-poster-container")
       .get()
-      .map((e, index) => ({
+      .map((e: any, index) => ({
         ...movieDataWithoutPoster[index],
         posterUrl: getImageURL(
           e.children[0].children[1].children[0].attribs.src

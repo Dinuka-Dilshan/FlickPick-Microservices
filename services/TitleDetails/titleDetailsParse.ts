@@ -1,12 +1,12 @@
 import { load } from "cheerio";
-import { URLS } from "../constants/urls";
-import { Movie } from "../types/movie";
-import { MIMIC_HEADERS } from "./headers";
-import { getImageURL } from "./images";
+import { MIMIC_HEADERS } from "../../constants/headers";
+import { URLS } from "../../constants/urls";
+import { getImageURL } from "../../utils/images";
+import { FlickTitleDetails } from "./types";
 
 export default async (
   id: string
-): Promise<{ movie?: Movie; error?: string }> => {
+): Promise<{ movie?: FlickTitleDetails; error?: string }> => {
   try {
     const response = await fetch(URLS.TITLE_DETAILS_URL(id), {
       headers: MIMIC_HEADERS,
@@ -29,7 +29,7 @@ export default async (
     const mainColumnData =
       nextDataScriptParsed?.props?.pageProps?.mainColumnData;
 
-    const movie: Movie = {
+    const movie: FlickTitleDetails = {
       title: parsed?.titleText?.text,
       ratings: parsed?.ratingsSummary?.aggregateRating,
       voteCount: parsed?.ratingsSummary?.voteCount,

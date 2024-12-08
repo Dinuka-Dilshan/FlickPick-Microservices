@@ -5,6 +5,7 @@ export type FlickTitleDetails = {
   releaseYear: string;
   certificate?: string;
   runtime?: string;
+  runtimeSeconds?: number;
   posterUrl: string;
   videoUrls?: string[];
   genres?: string[];

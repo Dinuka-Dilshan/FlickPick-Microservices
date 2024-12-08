@@ -36,6 +36,7 @@ export default async (
       releaseYear: parsed?.releaseYear?.year,
       certificate: parsed?.certificate?.rating,
       runtime: parsed?.runtime?.displayableProperty?.value?.plainText,
+      runtimeSeconds: parsed?.runtime?.seconds,
       posterUrl: parsed?.primaryImage?.url,
       videoUrls: parsed?.primaryVideos?.edges?.map(
         (edge: any) => edge?.node?.playbackURLs?.[0]?.url

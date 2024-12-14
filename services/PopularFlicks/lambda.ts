@@ -1,32 +1,33 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import popularMovieTvParse from "./popularMovieTvParse";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { Message } from "../../constants/Messages";
+import { LambdaFunctionType } from "../../types";
+import getList from "./getList";
 
-const s3Cleient = new S3Client();
+const ddbClient = new DynamoDBClient();
+const client = DynamoDBDocumentClient.from(ddbClient);
 
-export const handler = async () => {
-  const moviesPromise = popularMovieTvParse("moviemeter");
-  const tvsPromise = popularMovieTvParse("tvmeter");
+export const handler: LambdaFunctionType = async (event) => {
+  const type = event.pathParameters?.type?.toUpperCase();
 
-  const { movies, error: moviesError } = await moviesPromise;
-  const { movies: tvs, error: tvsError } = await tvsPromise;
+  if (type === "MOVIES" || type === "TVS") {
+    const { items, message, error } = await getList({
+      client,
+      type,
+    });
 
-  if (!moviesError) {
-    await s3Cleient.send(
-      new PutObjectCommand({
-        Body: JSON.stringify(movies),
-        Bucket: process.env.BUCKET,
-        Key: "popular-movies.json",
-      })
-    );
+    if (message === Message.ERROR) {
+      return {
+        body: JSON.stringify({ error }),
+        statusCode: 500,
+      };
+    }
+
+    return {
+      body: JSON.stringify(items),
+      statusCode: 200,
+    };
   }
 
-  if (!tvsError) {
-    await s3Cleient.send(
-      new PutObjectCommand({
-        Body: JSON.stringify(tvs),
-        Bucket: process.env.BUCKET,
-        Key: "popular-tvs.json",
-      })
-    );
-  }
+  return { body: "", statusCode: 404 };
 };

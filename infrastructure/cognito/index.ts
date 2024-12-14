@@ -19,14 +19,12 @@ import {
 import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
 
-type Props = StackProps & {
-  s3Bucket: Bucket;
-};
+
 
 export class CognitoUserPoolStack extends Stack {
   public readonly authorizer: HttpUserPoolAuthorizer;
 
-  constructor(scope: Construct, id: string, props: Props) {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     const userPool = new UserPool(this, "FlickPickUserPool", {
@@ -114,13 +112,13 @@ export class CognitoUserPoolStack extends Stack {
       ),
     });
 
-    role.addToPolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        resources: [`${props.s3Bucket.bucketArn}/*`],
-        actions: ["s3:GetObject"],
-      })
-    );
+    // role.addToPolicy(
+    //   new PolicyStatement({
+    //     effect: Effect.ALLOW,
+    //     resources: [`${props.s3Bucket.bucketArn}/*`],
+    //     actions: ["s3:GetObject"],
+    //   })
+    // );
 
     new CfnIdentityPoolRoleAttachment(
       this,

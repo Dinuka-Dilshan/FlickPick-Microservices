@@ -3,11 +3,8 @@ export type HistoryTableItem = {
   SK: string;
   title: string;
   image: string;
-  releaseYear: string;
-  watchedOn: number;
-  userRating: number;
-  type: string;
-  note: string;
+  addedOn: number;
+  type: "Movie"|"Tv";
   runtime: number;
   genre: string[];
 };

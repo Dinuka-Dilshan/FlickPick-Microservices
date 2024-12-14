@@ -1,23 +1,18 @@
 import { Duration, Stack, type StackProps } from "aws-cdk-lib";
-import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
-import type { Bucket } from "aws-cdk-lib/aws-s3";
 import type { Construct } from "constructs";
 import { join } from "path";
 
-type Props = StackProps & {
-  bucket: Bucket;
-};
-
 export class LambdaStack extends Stack {
   public readonly FlickPickSearchMoviesLambda: NodejsFunction;
-  public readonly FlickPickPopularMoviesTvsLambda: NodejsFunction;
+  public readonly FlickPickPopularMoviesTvsPopulateLambda: NodejsFunction;
   public readonly FlickPickTitleDetailsLambda: NodejsFunction;
   public readonly FlickPickWatchListLambda: NodejsFunction;
   public readonly FlickPickFlickHistoryLambda: NodejsFunction;
+  public readonly FlickPickPopularMoviesTvsLambda: NodejsFunction;
 
-  constructor(scope: Construct, id: string, props: Props) {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     this.FlickPickSearchMoviesLambda = new NodejsFunction(
@@ -33,12 +28,12 @@ export class LambdaStack extends Stack {
       }
     );
 
-    this.FlickPickPopularMoviesTvsLambda = new NodejsFunction(
+    this.FlickPickPopularMoviesTvsPopulateLambda = new NodejsFunction(
       this,
-      "FlickPickPopularMoviesTvsLambda",
+      "FlickPickPopularMoviesTvsPopulateLambda",
       {
         runtime: Runtime.NODEJS_LATEST,
-        memorySize: 512,
+        memorySize: 256,
         timeout: Duration.minutes(2),
         handler: "handler",
         entry: join(
@@ -47,21 +42,10 @@ export class LambdaStack extends Stack {
           "..",
           "services",
           "PopularFlicks",
-          "lambda.ts"
+          "eventLambda.ts"
         ),
-        functionName: "FlickPickPopularMoviesTvsLambda",
-        environment: {
-          BUCKET: props.bucket.bucketName,
-        },
+        functionName: "FlickPickPopularMoviesTvsPopulateLambda",
       }
-    );
-
-    this.FlickPickPopularMoviesTvsLambda.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: ["s3:PutObject"],
-        resources: [`${props.bucket.bucketArn}/*`],
-      })
     );
 
     this.FlickPickTitleDetailsLambda = new NodejsFunction(
@@ -121,6 +105,26 @@ export class LambdaStack extends Stack {
           "lambda.ts"
         ),
         functionName: "FlickPickFlickHistoryLambda",
+      }
+    );
+
+    this.FlickPickPopularMoviesTvsLambda = new NodejsFunction(
+      this,
+      "FlickPickPopularMoviesTvsLambda",
+      {
+        runtime: Runtime.NODEJS_LATEST,
+        memorySize: 256,
+        timeout: Duration.minutes(1),
+        handler: "handler",
+        entry: join(
+          __dirname,
+          "..",
+          "..",
+          "services",
+          "PopularFlicks",
+          "lambda.ts"
+        ),
+        functionName: "FlickPickPopularMoviesTvsLambda",
       }
     );
   }

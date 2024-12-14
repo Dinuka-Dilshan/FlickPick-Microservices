@@ -5,31 +5,28 @@ import { CognitoUserPoolStack } from "./cognito";
 import { DynamodbStack } from "./dynamodb";
 import { EventStack } from "./eventbridge";
 import { LambdaStack } from "./lambdas";
-import { S3Stack } from "./s3";
 
 const app = new cdk.App();
-const s3Stack = new S3Stack(app, "FlickPickS3Stack");
-const lambdas = new LambdaStack(app, "FlickPickLambdaStack", {
-  bucket: s3Stack.bucket,
-});
+const lambdas = new LambdaStack(app, "FlickPickLambdaStack");
 
-const cognito = new CognitoUserPoolStack(app, "CognitoUserPoolStack", {
-  s3Bucket: s3Stack.bucket,
-});
+const cognito = new CognitoUserPoolStack(app, "CognitoUserPoolStack");
 new ApiGatewayStack(app, "FlickPickApiGatewayStack", {
   searchLambda: lambdas.FlickPickSearchMoviesLambda,
   titleDetailsLambda: lambdas.FlickPickTitleDetailsLambda,
   authorizer: cognito.authorizer,
   watchListLambda: lambdas.FlickPickWatchListLambda,
   flickHistoryLambda: lambdas.FlickPickFlickHistoryLambda,
+  popularLambda: lambdas.FlickPickPopularMoviesTvsLambda,
 });
 new EventStack(app, "FlickPickEventStack", {
-  lambdaFunction: lambdas.FlickPickPopularMoviesTvsLambda,
+  lambdaFunction: lambdas.FlickPickPopularMoviesTvsPopulateLambda,
 });
 new DynamodbStack(app, "FlickPickDynamodbStack", {
   lambdas: [
     lambdas.FlickPickWatchListLambda,
     lambdas.FlickPickFlickHistoryLambda,
     lambdas.FlickPickTitleDetailsLambda,
+    lambdas.FlickPickPopularMoviesTvsLambda,
+    lambdas.FlickPickPopularMoviesTvsPopulateLambda,
   ],
 });

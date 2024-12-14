@@ -25,13 +25,10 @@ export default async ({ client, event, userId }: Params) => {
       SK: `HISTORY#${movie.imdbId}`,
       genre: movie.genre,
       image: movie.image,
-      note: movie.note,
       runtime: movie.runtime,
       title: movie.title,
       type: movie.type,
-      userRating: movie.userRating,
-      watchedOn: movie.watchedOn,
-      releaseYear: movie.releaseYear,
+      addedOn: Date.now(),
     };
 
     await client.send(

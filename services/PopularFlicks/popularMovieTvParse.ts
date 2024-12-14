@@ -1,7 +1,7 @@
 import { load } from "cheerio";
+import { MIMIC_HEADERS } from "../../constants/headers";
 import { getImageURL } from "../../utils/images";
 import { PopularFlick } from "./types";
-import { MIMIC_HEADERS } from "../../constants/headers";
 
 type Varient = "moviemeter" | "tvmeter";
 
@@ -22,19 +22,10 @@ export default async (
       .map((e: any) => ({
         title:
           e.children[1].children[1].children[0].children[0].children[0].data,
-        imdbUrl: `https://www.imdb.com${e.children[1].children[1].children[0].attribs.href}`,
         imdbId: `${
           e.children[1].children[1].children[0].attribs.href.split("/")?.[2]
         }`,
         releaseYear: e.children[1].children[2].children[0].children[0].data,
-        runtime: e.children[1].children[2].children[1]?.children[0].data,
-        certificate: e.children[1].children[2].children[2]?.children[0].data,
-        ratings:
-          e.children[1].children[3].children[0].children[0]?.children[1]
-            ?.children[0]?.data,
-        voteCount:
-          e.children[1].children[3].children[0].children[0]?.children[2]
-            ?.children[2]?.data,
         posterUrl: "",
         rank: 0,
       }));

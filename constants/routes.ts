@@ -1,6 +1,5 @@
 export const ROUTES = {
-  POPULAR_MOIES: "/topmovies",
-  POPULAR_TVS: "/toptvs",
+  POPULAR: "/top/{type}",
   SEARCH: "/search",
   TITLE_DETAILS: "/title/{id}",
   WATCH_LIST: "/watchlist",

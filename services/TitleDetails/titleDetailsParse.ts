@@ -86,6 +86,11 @@ export default async (
           imdbId: item?.node?.id,
         }))
         .filter((i: any) => i.posterUrl && i.title),
+      cast: mainColumnData?.cast?.edges?.map((c: any) => ({
+        id: c?.node?.name?.id,
+        name: c?.node?.name?.nameText?.text,
+        image: c?.node?.name?.primaryImage?.url,
+      })),
     };
 
     return {

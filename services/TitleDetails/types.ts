@@ -40,6 +40,7 @@ export type FlickTitleDetails = {
     titleType: string;
     imdbId: string;
   }[];
+  cast: { id: string; name: string; image: string }[];
 };
 
 export type FlickTitleDetailsTableItem = Omit<FlickTitleDetails, "imdbId"> & {
